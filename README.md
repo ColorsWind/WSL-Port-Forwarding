@@ -1,6 +1,6 @@
 # WSL-Port-Forwarding
 
-In Windows Subsystem for Linux 2 (WSL2), there is no obstacle for WSL to access the external network. Simultaneously, programs run in Windows (hereinafter referred to as Host) can access WSL by a LAN address (usually 172.x.x.x). However, services run by WSL2 cannot be directly accessed by remote computers, since it does NOT listen on Host's physical network interface. A simple solution is to forward the host port to WSL and configure appropriate firewall rules. This script can do this automatically.
+In Windows Subsystem for Linux 2 (WSL2), there is no obstacle for WSL to access the external network. Simultaneously, programs run in Windows (hereinafter referred to as host) can access WSL by a LAN address (usually 172.x.x.x). However, services run in WSL2 cannot be directly accessed by remote computers, since it does NOT listen on host's physical network interface. A simple solution is to forward the host port to WSL and configure appropriate firewall rules. This script can do those automatically.
 
 
 
@@ -14,11 +14,11 @@ In Windows Subsystem for Linux 2 (WSL2), there is no obstacle for WSL to access 
 
 ## Principle
 
-Built on Hyper-V, WSL2 is a  a real virtual machine, which has independent virtual network (in a different network segment from the Host). We discuss the incoming and outgoing directions of network packets from external network respectively:
+Built on Hyper-V, WSL2 is a  a real virtual machine, which has independent virtual network (in a different network segment from the host). We discuss the incoming and outgoing directions of network packets from external network respectively:
 
 INCOME: If the firewall of the Host is configured properly, the external computer can access the port on the physical network interface of the host, but the service on WSL listens on its own virtual network interface.
 
-OUTCOME:  Windows will complete the network address translation (NAT address translation), and WSL always accesses the external network with the Host's IP, Windows can also correctly handle the response from the external network in the way of NAT address translation. Therefore, there is no obstacle for WSL to access the external network or PASSIVELY accept the results returned by the external network.
+OUTCOME:  Windows will complete the network address translation (NAT address translation), and WSL always accesses the external network with the host's IP, Windows can also correctly handle the response from the external network in the way of NAT address translation. Therefore, there is no obstacle for WSL to access the external network or PASSIVELY accept the results returned by the external network.
 
 **Reference:**
 
@@ -40,7 +40,7 @@ Out of the box, **no configuration required**, only three simple step.
 
     The simplest way: `Win` + `X` -> Windows PowellShell**(admin)**
 
-2. Open WSL
+2. Open WSL Terminal
 
    Run `wsl` in the console. (If you install multiple distribution, you may use `wsl -d Ubuntu-20.04` etc.)
 
@@ -52,7 +52,7 @@ Out of the box, **no configuration required**, only three simple step.
    pip install wsl_port_forwarding
    ```
 
-   Once it was installed, just run: `port_forwarding`. If everything is OK, something like this will be displayed in console. 
+   Once it is installed, just run: `port_forwarding`. If everything is OK, something like this will be displayed in console. 
 
    ![example](README.assets/example.png)
 
@@ -63,8 +63,8 @@ Script will run automatically configure forwarding and firewall rules for the po
 ## Requirement
 
 1. WSL2
-2. python3.6+ on WSL2
-3. administrators privilege
+2. python3.6+ in WSL2
+3. Windows administrators privilege
 
 
 
@@ -94,7 +94,7 @@ then: `python3 port_forwarding.py` to start.
 
 The added rules will be deleted automatically when the script exits normally, so you only need to delete the script. That is, if you install by pip, use `pip uninstall wsl_port_forwarding`, or if you install from source, just delete `port_forwarding.py`.
 
-If you need to manually delete the configuration added by the script, you can run in power shell (or cmd) on Windows with **administrators privilege**.
+If you need to manually delete the configuration added by the script, you can run in powershell (or cmd) in Windows with **administrators privilege**.
 
 ```powershell
 netsh.exe interface portproxy reset ipv4
