@@ -62,10 +62,13 @@ class ForwardingManager(object):
         for line in query_out:
             try:
                 items = line.split()
-                if len(items) != ITEM_LENGTH or items[PROTOCOL] != "tcp":
+                if len(items) != ITEM_LENGTH or items[PROTOCOL] not in ["tcp", "tcp6"]:
                     continue
-                local_address, local_port = items[LOCAL_ADDRESS].split(":")
-                foreign_address, _ = items[FOREIGN_ADDRESS].split(":")
+                if items[PROTOCOL] == "tcp":
+                    local_address, local_port = items[LOCAL_ADDRESS].split(":")
+                    foreign_address, _ = items[FOREIGN_ADDRESS].split(":")
+                else:
+                    local_port = items[LOCAL_ADDRESS].split(":")[-1]
                 if items[PID_PROGRAM] == "-":
                     continue
                 # allow program has a slash in the name (i.e. /venv/bin/python3 blah.py)
