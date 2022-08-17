@@ -52,6 +52,11 @@ class ForwardingManager(object):
 
     def get_wsl_bind_ports(self) -> dict[int, tuple[int, str]]:
         with os.popen("netstat -tpln 2> /dev/null") as p:
+            """ Something like:
+            Active Internet connections (only servers)
+            Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name
+            tcp        0      0 0.0.0.0:12345           0.0.0.0:*               LISTEN      1234/python
+            """
             query_out = p.readlines()
         ports = {}
         for line in query_out:
@@ -63,7 +68,8 @@ class ForwardingManager(object):
                 foreign_address, _ = items[FOREIGN_ADDRESS].split(":")
                 if items[PID_PROGRAM] == "-":
                     continue
-                pid, program_name = items[PID_PROGRAM].split("/")
+                # allow program has a slash in the name (i.e. /venv/bin/python3 blah.py)
+                pid, program_name = items[PID_PROGRAM].split("/", maxsplit=1)
                 if self.should_forward_port(program_name):
                     ports[int(local_port)] = (int(pid), program_name)
             except Exception as e:
