@@ -2,6 +2,8 @@
 
 
 from __future__ import annotations
+
+import platform
 import sys
 import json
 import argparse
@@ -22,8 +24,17 @@ PID_PROGRAM = 6
 ITEM_LENGTH = 7
 
 
-def test_admin_privilege() -> bool:
-    return os.system("net.exe session > /dev/null") == 0
+def test_admin_privilege():
+    if os.system("net.exe session > /dev/null") != 0:
+        print("You need Windows administrator privileges to use this script().", file=sys.stderr)
+        exit(-1)
+
+
+def test_os():
+    if platform.system() == "Windows":
+        print("This script should run on WSL environments.", file=sys.stderr)
+        print("See https://github.com/ColorsWind/WSL-Port-Forwarding/issues/4 for more.", file=sys.stderr)
+        exit(-1)
 
 
 def cleanup():
@@ -216,6 +227,7 @@ def save_config(config: dict):
 
 
 def main():
+    test_os()
     config = load_config()
     parser = argparse.ArgumentParser(
         description="A script that enable outside program access WSL2 ports by port forwarding.")
@@ -248,9 +260,7 @@ def main():
     if parsed_args.gen_config:
         save_config(config)
         exit(0)
-    if not test_admin_privilege():
-        print("You need Windows administrator privileges to use this script.")
-        exit(-1)
+    test_admin_privilege()
     if parsed_args.clean_rules:
         cleanup()
         exit(0)
