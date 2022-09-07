@@ -32,8 +32,7 @@ jobs:
           python3 -m build
 
       - name: Publish Package
-        uses: Commandcracker/pypi-publish@v1
+        uses: etils-actions/pypi-auto-publish@v1
         with:
-          user: ${{ secrets.PYPI_API_USER }}
-          password: ${{ secrets.PYPI_API_TOKEN }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          pypi-token: ${{ secrets.PYPI_API_TOKEN }}
+#          gh-token: ${{ secrets.GITHUB_TOKEN }}
