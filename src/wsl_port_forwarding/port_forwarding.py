@@ -81,9 +81,11 @@ class ForwardingManager(object):
                 else:
                     local_port = items[LOCAL_ADDRESS].split(":")[-1]
                 if items[PID_PROGRAM] == "-":
-                    continue
+                    pid = 0
+                    program_name = "Hidden"
                 # allow program has a slash in the name (i.e. /venv/bin/python3 blah.py)
-                pid, program_name = items[PID_PROGRAM].split("/", maxsplit=1)
+                else:
+                    pid, program_name = items[PID_PROGRAM].split("/", maxsplit=1)
                 if self.should_forward_port(program_name):
                     ports[int(local_port)] = (int(pid), program_name)
             except Exception as e:
@@ -249,6 +251,8 @@ def main():
                         help='generate config in ~/.wsl_port_forwarding.json')
     parser.add_argument('--clean_rules', action='store_true', default=False,
                         help='clean all netsh port forwarding rule and relevant firewall rules')
+    parser.add_argument('--no-cleanup', action='store_true', default=False,
+                        help="Don't cleanup on exit")
     parsed_args = parser.parse_args()
     manager = ForwardingManager(
         windows_ip=parsed_args.windows_ip,
@@ -268,9 +272,10 @@ def main():
         main_auto_mode(manager, parsed_args.interval)
     else:
         main_manual_mode(manager)
-    print("\nExits, removing ports forwarding and firewall rules.")
-    manager.remove_all_ports()
-    print("\nRemoving completed!")
+    if not parsed_args.no_cleanup:
+        print("\nExits, removing ports forwarding and firewall rules.")
+        manager.remove_all_ports()
+        print("\nRemoving completed!")
 
 
 if __name__ == "__main__":
