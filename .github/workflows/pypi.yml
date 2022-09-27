@@ -29,10 +29,11 @@ jobs:
         id: build
         shell: pwsh
         run: |
-          python3 -m build
+           python3 -m build
 
       - name: Publish Package
         uses: etils-actions/pypi-auto-publish@v1
         with:
           pypi-token: ${{ secrets.PYPI_API_TOKEN }}
+          print_hash: true
 #          gh-token: ${{ secrets.GITHUB_TOKEN }}
