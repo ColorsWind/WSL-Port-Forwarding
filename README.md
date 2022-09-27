@@ -1,6 +1,8 @@
 # WSL-Port-Forwarding
 
-In Windows Subsystem for Linux 2 (WSL2), there is no obstacle for WSL to access the external network. Simultaneously, programs run in Windows (hereinafter referred to as host) can access WSL by a LAN address (usually 172.x.x.x). However, services run in WSL2 cannot be directly accessed by remote computers, since it does NOT listen on host's physical network interface. A simple solution is to forward the host port to WSL and configure appropriate firewall rules. This script can do those automatically.
+Windows Subsystem for Linux 2 (WSL2) has a virtualized ethernet adapter with its own unique IP address (usually 172.x.x.x). Services run in WSL2 cannot be directly accessed by remote computers. [There is a simple solution](https://learn.microsoft.com/en-us/windows/wsl/networking): using `netsh`  to forward connection.
+
+This script will discover service run on WSL, and then forward the host port to WSL and configure appropriate firewall rules. 
 
 
 
@@ -8,7 +10,13 @@ In Windows Subsystem for Linux 2 (WSL2), there is no obstacle for WSL to access 
 
 - [ ] a launcher to make it faster to start this script
 - [ ] get the notification of program binding port in real time (NEED HELP)
-- [ ] maybe UDP support?
+
+
+
+## Limitations
+
+1. Since we use `netsh`, we cannot support UDP.
+2. We scan service periodicity and it might not suitable for service that frequently changing listening ports.
 
 
 
