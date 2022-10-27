@@ -10,6 +10,7 @@ import argparse
 import traceback
 import time
 import os
+import subprocess
 
 __author__ = 'ColorsWind'
 __version__ = '1.0.0'
@@ -25,7 +26,9 @@ ITEM_LENGTH = 7
 
 
 def test_admin_privilege():
-    if os.system("net.exe session > /dev/null") != 0:
+    with subprocess.Popen(["net.exe", "session"], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) as p:
+        pass
+    if p.returncode != 0:
         print("You need Windows administrator privileges to use this script().", file=sys.stderr)
         exit(-1)
 
