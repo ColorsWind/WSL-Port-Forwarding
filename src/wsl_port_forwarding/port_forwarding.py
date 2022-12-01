@@ -216,7 +216,9 @@ def load_config():
         config = {}
     config.setdefault('update_interval', 0.5)
     config.setdefault('windows_ip', '0.0.0.0')
-    with os.popen("hostname -I | awk '{print $1}'") as p:
+    # https://superuser.com/questions/1649739/how-to-get-lan-ip-address-as-output-in-arch-linux-manjaro
+    # support arch, use `ip` instead of `hostname`
+    with os.popen("ip -o -4 addr list eth0 | awk '{print $4}' | cut -d/ -f1") as p:
         config.setdefault('wsl_ip', p.read().strip())
     config.setdefault('ignore_exception', False)
     config.setdefault('allow_program_name', list())
